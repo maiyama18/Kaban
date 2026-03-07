@@ -64,7 +64,7 @@ extension View {
     }
 }
 
-internal struct KabanFontModifier: ViewModifier {
+private struct KabanFontModifier: ViewModifier {
     private let weight: Font.Weight
 
     @ScaledMetric private var scaledSize: CGFloat

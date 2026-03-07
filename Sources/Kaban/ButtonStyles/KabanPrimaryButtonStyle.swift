@@ -12,7 +12,7 @@ public struct KabanPrimaryButtonStyle: ButtonStyle {
             .padding(.vertical, 12)
             .padding(.horizontal, 12)
             .frame(maxWidth: .infinity)
-            .background(isEnabled ? accentColor : KabanColor.surfaceDisabled.color)
+            .background(isEnabled ? accentColor.color : KabanColor.surfaceDisabled.color)
             .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
             .opacity(configuration.isPressed ? 0.7 : 1.0)
     }

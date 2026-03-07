@@ -8,9 +8,7 @@ public struct KabanSecondaryButtonStyle: ButtonStyle {
 
     public func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .modifier(KabanFontModifier(font: .bodyLarge(weight: .bold)))
-            .lineSpacing(KabanFont.bodyLarge(weight: .bold).lineSpacing)
-            .foregroundStyle(isEnabled ? accentColor : KabanColor.surfaceDisabled.color)
+            .kabanTextStyle(.bodyLarge(weight: .bold), color: isEnabled ? accentColor : .surfaceDisabled)
             .padding(.vertical, 12)
             .padding(.horizontal, 12)
             .frame(maxWidth: .infinity)
