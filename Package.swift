@@ -4,6 +4,7 @@ import PackageDescription
 
 let package = Package(
     name: "Kaban",
+    platforms: [.iOS(.v26), .macOS(.v26)],
     products: [
         .library(
             name: "Kaban",
@@ -12,7 +13,8 @@ let package = Package(
     ],
     targets: [
         .target(
-            name: "Kaban"
+            name: "Kaban",
+            resources: [.process("DesignSystem/Resources")]
         ),
         .testTarget(
             name: "KabanTests",
