@@ -2,7 +2,7 @@ import SwiftUI
 
 private struct OnForegroundModifier: ViewModifier {
     @Environment(\.scenePhase) private var scenePhase
-    let action: @Sendable () async -> Void
+    let action: @MainActor () async -> Void
 
     func body(content: Content) -> some View {
         content
@@ -14,7 +14,7 @@ private struct OnForegroundModifier: ViewModifier {
 }
 
 extension View {
-    public func onForeground(_ action: @escaping @Sendable () async -> Void) -> some View {
+    public func onForeground(_ action: @escaping @MainActor () async -> Void) -> some View {
         modifier(OnForegroundModifier(action: action))
     }
 }
