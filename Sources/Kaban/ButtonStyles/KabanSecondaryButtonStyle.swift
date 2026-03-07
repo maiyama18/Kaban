@@ -33,3 +33,16 @@ extension ButtonStyle where Self == KabanSecondaryButtonStyle {
     }
     .padding()
 }
+
+#Preview("Accent: Blue") {
+    VStack(spacing: 16) {
+        Button("Enabled") {}
+            .buttonStyle(.kabanSecondary)
+
+        Button("Disabled") {}
+            .buttonStyle(.kabanSecondary)
+            .disabled(true)
+    }
+    .padding()
+    .environment(\.kabanAccentColor, .accentBlue)
+}
