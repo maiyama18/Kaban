@@ -11,7 +11,7 @@ public struct KabanPrimaryButtonStyle: ButtonStyle {
             .kabanTextStyle(.bodyLarge(weight: .bold), color: isEnabled ? .textInvertedPrimary : .textDisabled)
             .padding(.vertical, 12)
             .padding(.horizontal, 12)
-            .frame(maxWidth: .infinity)
+
             .background(isEnabled ? accentColor.color : KabanColor.surfaceDisabled.color)
             .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
             .opacity(configuration.isPressed ? 0.7 : 1.0)
