@@ -57,14 +57,14 @@ public struct KabanFont: Sendable {
 }
 
 extension View {
-    public func kabanTextStyle(_ style: KabanFont, color: KabanColor = .textPrimary) -> some View {
+    public func kabanTextStyle(_ style: KabanFont, color: KabanColor) -> some View {
         modifier(KabanFontModifier(font: style))
             .lineSpacing(style.lineSpacing)
             .foregroundStyle(color.color)
     }
 }
 
-private struct KabanFontModifier: ViewModifier {
+internal struct KabanFontModifier: ViewModifier {
     private let weight: Font.Weight
 
     @ScaledMetric private var scaledSize: CGFloat
