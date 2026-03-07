@@ -13,6 +13,7 @@ public struct KabanColor: Sendable {
     public static let textDanger = KabanColor(resource: .Text.danger)
     public static let textDisabled = KabanColor(resource: .Text.disabled)
 
+    public static let surfaceNeutral = KabanColor(resource: .Surface.neutral)
     public static let surfaceDisabled = KabanColor(resource: .Surface.disabled)
     public static let surfaceDanger = KabanColor(resource: .Surface.danger)
 
