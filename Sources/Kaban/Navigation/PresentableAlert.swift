@@ -1,8 +1,8 @@
 import SwiftUI
 
 public struct PresentableAlert: Sendable {
-    public let message: String
-    public let actions: @Sendable @MainActor () -> AnyView
+    internal let message: String
+    internal let actions: @Sendable @MainActor () -> AnyView
 
     public init(message: String, @ViewBuilder actions: @escaping @Sendable @MainActor () -> some View) {
         let builder = actions
