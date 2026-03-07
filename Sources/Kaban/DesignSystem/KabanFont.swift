@@ -39,6 +39,10 @@ public struct KabanFont: Sendable {
         KabanFont(size: 20, relativeTo: .title3, weight: weight, lineSpacing: 3)
     }
 
+    public static func bodyLarge(weight: KabanFontWeight = .regular) -> KabanFont {
+        KabanFont(size: 17, relativeTo: .body, weight: weight, lineSpacing: 3)
+    }
+
     public static func bodyRegular(weight: KabanFontWeight = .regular) -> KabanFont {
         KabanFont(size: 15, relativeTo: .subheadline, weight: weight, lineSpacing: 3)
     }
