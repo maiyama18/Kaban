@@ -40,3 +40,13 @@ public struct AsyncButton<Label: View>: View {
         }
     }
 }
+
+#Preview {
+    AsyncButton {
+        try? await Task.sleep(for: .seconds(2))
+    } label: {
+        Text("Tap me")
+    }
+    .buttonStyle(.kabanPrimary)
+    .padding()
+}

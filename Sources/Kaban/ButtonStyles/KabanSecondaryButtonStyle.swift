@@ -23,3 +23,15 @@ public struct KabanSecondaryButtonStyle: ButtonStyle {
 extension ButtonStyle where Self == KabanSecondaryButtonStyle {
     public static var kabanSecondary: KabanSecondaryButtonStyle { .init() }
 }
+
+#Preview {
+    VStack(spacing: 16) {
+        Button("Enabled") {}
+            .buttonStyle(.kabanSecondary)
+
+        Button("Disabled") {}
+            .buttonStyle(.kabanSecondary)
+            .disabled(true)
+    }
+    .padding()
+}
