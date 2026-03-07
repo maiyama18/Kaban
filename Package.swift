@@ -16,7 +16,6 @@ let package = Package(
         .target(
             name: "Kaban",
             resources: [
-                .process("DesignSystem/Resources"),
                 .process("Resources"),
             ]
         ),
