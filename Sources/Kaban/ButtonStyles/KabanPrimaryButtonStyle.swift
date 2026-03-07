@@ -8,7 +8,7 @@ public struct KabanPrimaryButtonStyle: ButtonStyle {
 
     public func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .kabanTextStyle(.bodyLarge(weight: .bold), color: .textInvertedPrimary)
+            .kabanTextStyle(.bodyLarge(weight: .bold), color: isEnabled ? .textInvertedPrimary : .textDisabled)
             .padding(.vertical, 12)
             .padding(.horizontal, 12)
             .frame(maxWidth: .infinity)

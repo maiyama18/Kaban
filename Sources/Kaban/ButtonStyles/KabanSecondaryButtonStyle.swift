@@ -8,7 +8,7 @@ public struct KabanSecondaryButtonStyle: ButtonStyle {
 
     public func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .kabanTextStyle(.bodyLarge(weight: .bold), color: isEnabled ? accentColor : .surfaceDisabled)
+            .kabanTextStyle(.bodyLarge(weight: .bold), color: isEnabled ? accentColor : .textDisabled)
             .padding(.vertical, 12)
             .padding(.horizontal, 12)
             .frame(maxWidth: .infinity)
