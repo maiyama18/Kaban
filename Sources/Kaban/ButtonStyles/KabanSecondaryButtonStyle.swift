@@ -1,0 +1,24 @@
+import SwiftUI
+
+public struct KabanSecondaryButtonStyle: ButtonStyle {
+    @Environment(\.isEnabled) private var isEnabled
+    @Environment(\.kabanAccentColor) private var accentColor
+
+    public init() {}
+
+    public func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .kabanTextStyle(.bodyLarge(weight: .bold))
+            .foregroundStyle(isEnabled ? accentColor : KabanColor.surfaceDisabled.color)
+            .padding(.vertical, 12)
+            .padding(.horizontal, 12)
+            .frame(maxWidth: .infinity)
+            .background(isEnabled ? Color(.systemGray5) : KabanColor.surfaceDisabled.color)
+            .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+            .opacity(configuration.isPressed ? 0.7 : 1.0)
+    }
+}
+
+extension ButtonStyle where Self == KabanSecondaryButtonStyle {
+    public static var kabanSecondary: KabanSecondaryButtonStyle { .init() }
+}
