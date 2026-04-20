@@ -35,6 +35,57 @@
         }
       }
     },
+    "photo_library_error_asset_not_found" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Photo not found."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "写真が見つかりません"
+          }
+        }
+      }
+    },
+    "photo_library_error_cloud_identifier_unavailable" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud Photos identifier is unavailable. Enable iCloud Photos to sync photos across devices."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud 写真の識別子を取得できません。デバイス間で同期するには iCloud 写真を有効にしてください"
+          }
+        }
+      }
+    },
+    "photo_library_error_save_failed" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Failed to save photo."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "写真の保存に失敗しました"
+          }
+        }
+      }
+    },
     "retry" : {
       "extractionState" : "manual",
       "localizations" : {
