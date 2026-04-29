@@ -1,5 +1,6 @@
 import SwiftUI
 
+/// A SwiftUI container that binds ``NavigationFlow`` to `NavigationStack` and presentations.
 public struct NavigationFlowContainer<
     PushableDestination: Hashable & Sendable,
     PresentableSheet: Identifiable & Sendable,
@@ -12,6 +13,7 @@ public struct NavigationFlowContainer<
     private let fullScreenBuilder: (PresentableFullScreen) -> AnyView
     private let root: Root
 
+    /// Creates a navigation container with push, sheet, and full-screen destinations.
     public init(
         flow: NavigationFlow<PushableDestination, PresentableSheet, PresentableFullScreen>,
         @ViewBuilder pushDestination: @escaping (PushableDestination) -> some View,
@@ -99,6 +101,7 @@ public struct NavigationFlowContainer<
 }
 
 extension NavigationFlowContainer where PresentableSheet == Never {
+    /// Creates a navigation container with push and full-screen destinations.
     public init(
         flow: NavigationFlow<PushableDestination, Never, PresentableFullScreen>,
         @ViewBuilder pushDestination: @escaping (PushableDestination) -> some View,
@@ -114,6 +117,7 @@ extension NavigationFlowContainer where PresentableSheet == Never {
 }
 
 extension NavigationFlowContainer where PresentableFullScreen == Never {
+    /// Creates a navigation container with push and sheet destinations.
     public init(
         flow: NavigationFlow<PushableDestination, PresentableSheet, Never>,
         @ViewBuilder pushDestination: @escaping (PushableDestination) -> some View,
@@ -129,6 +133,7 @@ extension NavigationFlowContainer where PresentableFullScreen == Never {
 }
 
 extension NavigationFlowContainer where PresentableSheet == Never, PresentableFullScreen == Never {
+    /// Creates a navigation container with push destinations only.
     public init(
         flow: NavigationFlow<PushableDestination, Never, Never>,
         @ViewBuilder pushDestination: @escaping (PushableDestination) -> some View,

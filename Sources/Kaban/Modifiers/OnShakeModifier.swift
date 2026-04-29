@@ -26,6 +26,7 @@ private struct OnShakeModifier: ViewModifier {
 }
 
 extension View {
+    /// Runs an action when the device shake motion is detected.
     public func onShake(perform action: @escaping () -> Void) -> some View {
         modifier(OnShakeModifier(action: action))
     }

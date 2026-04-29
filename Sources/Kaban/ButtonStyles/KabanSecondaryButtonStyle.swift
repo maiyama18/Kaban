@@ -1,9 +1,11 @@
 import SwiftUI
 
+/// Neutral secondary button style using the current `kabanAccentColor` for text.
 public struct KabanSecondaryButtonStyle: ButtonStyle {
     @Environment(\.isEnabled) private var isEnabled
     @Environment(\.kabanAccentColor) private var accentColor
 
+    /// Creates a secondary button style.
     public init() {}
 
     public func makeBody(configuration: Configuration) -> some View {
@@ -19,6 +21,7 @@ public struct KabanSecondaryButtonStyle: ButtonStyle {
 }
 
 extension ButtonStyle where Self == KabanSecondaryButtonStyle {
+    /// Neutral secondary Kaban button style.
     public static var kabanSecondary: KabanSecondaryButtonStyle { .init() }
 }
 

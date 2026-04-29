@@ -14,6 +14,7 @@ private struct OnForegroundModifier: ViewModifier {
 }
 
 extension View {
+    /// Runs an async action whenever the scene phase becomes active.
     public func onForeground(_ action: @escaping @MainActor () async -> Void) -> some View {
         modifier(OnForegroundModifier(action: action))
     }

@@ -1,5 +1,6 @@
 import SwiftUI
 
+/// Button that runs an async action and shows a progress indicator while the action is running.
 public struct AsyncButton<Label: View>: View {
     private let action: () async -> Void
     private let label: Label
@@ -7,6 +8,10 @@ public struct AsyncButton<Label: View>: View {
     @State private var isRunning = false
     @State private var task: Task<Void, Never>?
 
+    /// Creates an async button.
+    ///
+    /// The button is disabled until `action` completes. If the view disappears,
+    /// the running task is cancelled.
     public init(
         action: @escaping () async -> Void,
         @ViewBuilder label: () -> Label

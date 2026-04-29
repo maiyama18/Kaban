@@ -1,10 +1,16 @@
 import SwiftUI
 
+/// Displays a standard view for a ``LoadingState``.
+///
+/// Empty and loading states show a `ProgressView`, loaded state renders the
+/// supplied content, and failed state shows the error description with an
+/// optional retry button.
 public struct LoadingStateView<T: Sendable, LoadedContent: View>: View {
     private let state: LoadingState<T>
     private let loadedContent: (T) -> LoadedContent
     private let retryAction: (() async -> Void)?
 
+    /// Creates a loading state view.
     public init(
         state: LoadingState<T>,
         @ViewBuilder loadedContent: @escaping (T) -> LoadedContent,

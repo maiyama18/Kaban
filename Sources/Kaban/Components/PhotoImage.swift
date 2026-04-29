@@ -6,6 +6,7 @@ import UIKit
 /// the caller to swap in a mock loader for previews and tests without
 /// relying on a DI framework.
 public protocol PhotoImageLoading: Sendable {
+    /// Loads an image for a photo library cloud identifier.
     func requestImage(
         cloudIdentifier: String,
         displayType: PhotoLibraryClient.DisplayType
@@ -14,7 +15,9 @@ public protocol PhotoImageLoading: Sendable {
 
 extension PhotoLibraryClient: PhotoImageLoading {}
 
+/// Default placeholder for ``PhotoImage``.
 public struct DefaultPhotoImagePlaceholder: View {
+    /// Creates the default placeholder.
     public init() {}
 
     public var body: some View {
@@ -38,6 +41,7 @@ public struct PhotoImage<Placeholder: View>: View {
 
     @State private var image: Image?
 
+    /// Creates a photo image view with a custom placeholder.
     public init(
         cloudIdentifier: String,
         displayType: PhotoLibraryClient.DisplayType,
@@ -73,6 +77,7 @@ public struct PhotoImage<Placeholder: View>: View {
 }
 
 extension PhotoImage where Placeholder == DefaultPhotoImagePlaceholder {
+    /// Creates a photo image view with ``DefaultPhotoImagePlaceholder``.
     public init(
         cloudIdentifier: String,
         displayType: PhotoLibraryClient.DisplayType,

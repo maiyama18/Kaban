@@ -1,9 +1,11 @@
 import SwiftUI
 
+/// `TextEditor` with placeholder text shown while the bound text is empty.
 public struct PlaceholderTextEditor: View {
     @Binding private var text: String
     private let placeholder: String
 
+    /// Creates a placeholder text editor.
     public init(text: Binding<String>, placeholder: String) {
         self._text = text
         self.placeholder = placeholder

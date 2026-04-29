@@ -1,6 +1,7 @@
 import Foundation
 
 extension Bundle {
+    /// App version text in the form `CFBundleShortVersionString (CFBundleVersion)`.
     public var appVersionText: String? {
         let shortVersion = object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
         let buildVersion = object(forInfoDictionaryKey: "CFBundleVersion") as? String
@@ -9,6 +10,7 @@ extension Bundle {
         return "\(shortVersion) (\(buildVersion))"
     }
 
+    /// Whether the bundle appears to be running from an App Store receipt.
     public var isAppStore: Bool {
         #if DEBUG
         return false

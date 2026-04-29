@@ -32,6 +32,11 @@ internal enum NavigationFlowPresentedContent<
     case alert(PresentableAlert)
 }
 
+/// Navigation and presentation state for a ``NavigationFlowContainer``.
+///
+/// A flow owns one navigation stack path and at most one active presentation:
+/// sheet, full-screen cover, or alert. Presented sheets and full-screen covers
+/// receive their own nested flow.
 @Observable
 @MainActor
 public final class NavigationFlow<
@@ -43,8 +48,10 @@ public final class NavigationFlow<
     internal typealias PresentedSheetContent = NavigationFlowPresentedSheetContent<PushableDestination, PresentableSheet, PresentableFullScreen>
     internal typealias PresentedFullScreenContent = NavigationFlowPresentedFullScreenContent<PushableDestination, PresentableSheet, PresentableFullScreen>
 
+    /// Destinations currently pushed in the navigation stack.
     public var path: [PushableDestination] = []
     internal var presentedContent: PresentedContent?
+    /// The deepest visible flow, following presented sheets and full-screen covers.
     public var visibleNavigationFlow: NavigationFlow {
         switch presentedContent {
         case .sheet(let content):
@@ -74,21 +81,26 @@ public final class NavigationFlow<
         return alert
     }
 
+    /// Creates an empty navigation flow.
     public init() {}
 
+    /// Pushes a destination onto the navigation stack.
     public func push(_ destination: PushableDestination) {
         path.append(destination)
     }
 
+    /// Pops the last destination from the navigation stack if one exists.
     public func pop() {
         guard !path.isEmpty else { return }
         path.removeLast()
     }
 
+    /// Removes all pushed destinations.
     public func popAll() {
         path.removeAll()
     }
 
+    /// Presents a sheet and gives that sheet its own nested navigation flow.
     public func presentSheet(_ sheet: PresentableSheet) {
         presentedContent = .sheet(
             PresentedSheetContent(
@@ -98,6 +110,7 @@ public final class NavigationFlow<
         )
     }
 
+    /// Presents a full-screen cover and gives that cover its own nested navigation flow.
     public func presentFullScreen(_ fullScreen: PresentableFullScreen) {
         presentedContent = .fullScreen(
             PresentedFullScreenContent(
@@ -107,10 +120,12 @@ public final class NavigationFlow<
         )
     }
 
+    /// Presents an alert.
     public func presentAlert(_ alert: PresentableAlert) {
         presentedContent = .alert(alert)
     }
 
+    /// Dismisses the active sheet, full-screen cover, or alert.
     public func dismissPresentedContent() {
         presentedContent = nil
     }

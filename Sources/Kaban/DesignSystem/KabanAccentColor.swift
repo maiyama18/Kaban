@@ -5,6 +5,7 @@ private struct KabanAccentColorKey: EnvironmentKey {
 }
 
 extension EnvironmentValues {
+    /// Accent color token used by Kaban controls.
     public var kabanAccentColor: KabanColor {
         get { self[KabanAccentColorKey.self] }
         set { self[KabanAccentColorKey.self] = newValue }

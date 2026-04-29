@@ -15,6 +15,7 @@ private struct OnFirstAppearModifier: ViewModifier {
 }
 
 extension View {
+    /// Runs an async action once when the view first appears.
     public func onFirstAppear(_ action: @escaping @MainActor () async -> Void) -> some View {
         modifier(OnFirstAppearModifier(action: action))
     }

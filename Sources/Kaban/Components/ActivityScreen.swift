@@ -1,9 +1,11 @@
 import SwiftUI
 import UIKit
 
+/// SwiftUI wrapper for `UIActivityViewController`.
 public struct ActivityScreen: UIViewControllerRepresentable {
     private let activityItems: [Any]
 
+    /// Creates an activity screen for the given items.
     public init(activityItems: [Any]) {
         self.activityItems = activityItems
     }

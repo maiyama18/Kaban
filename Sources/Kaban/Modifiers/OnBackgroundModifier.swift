@@ -14,6 +14,7 @@ private struct OnBackgroundModifier: ViewModifier {
 }
 
 extension View {
+    /// Runs an async action whenever the scene phase becomes background.
     public func onBackground(_ action: @escaping @MainActor () async -> Void) -> some View {
         modifier(OnBackgroundModifier(action: action))
     }

@@ -2,16 +2,26 @@ import CoreLocation
 import Foundation
 import MapKit
 
+/// Lightweight placemark returned by ``GeocodingClient``.
 public struct Placemark: Sendable, Equatable {
+    /// Display name, such as a place or landmark name.
     public let name: String?
+    /// Full formatted address when available.
     public let fullAddress: String?
+    /// Short formatted address when available.
     public let shortAddress: String?
+    /// City or locality name.
     public let cityName: String?
+    /// Region, prefecture, or state name.
     public let regionName: String?
+    /// ISO-like country or region code from MapKit.
     public let countryRegionCode: String?
+    /// Latitude in degrees.
     public let latitude: Double
+    /// Longitude in degrees.
     public let longitude: Double
 
+    /// Creates a placemark value.
     public init(
         name: String? = nil,
         fullAddress: String? = nil,
@@ -32,6 +42,7 @@ public struct Placemark: Sendable, Equatable {
         self.longitude = longitude
     }
 
+    /// Coordinate built from ``latitude`` and ``longitude``.
     public var coordinate: CLLocationCoordinate2D {
         CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
     }
@@ -63,9 +74,13 @@ extension Placemark {
     }
 }
 
+/// Error returned by ``GeocodingClient``.
 public enum GeocodingError: Error, LocalizedError {
+    /// The input could not be converted into a MapKit geocoding request.
     case invalidInput
+    /// The geocoding request succeeded but returned no result.
     case notFound
+    /// The underlying MapKit request failed.
     case underlying(any Error)
 
     public var errorDescription: String? {
@@ -86,9 +101,12 @@ public enum GeocodingError: Error, LocalizedError {
 /// and cache results when invoking these methods frequently. Prefer at most
 /// one in-flight request at a time for a given user interaction.
 public struct GeocodingClient: Sendable {
+    /// Reverse geocodes a location into a single placemark.
     public var reverseGeocode: @Sendable (CLLocation) async throws -> Placemark
+    /// Forward geocodes an address string into placemark candidates.
     public var forwardGeocode: @Sendable (String) async throws -> [Placemark]
 
+    /// Creates a geocoding client from closures.
     public init(
         reverseGeocode: @escaping @Sendable (CLLocation) async throws -> Placemark,
         forwardGeocode: @escaping @Sendable (String) async throws -> [Placemark]
@@ -99,6 +117,7 @@ public struct GeocodingClient: Sendable {
 }
 
 extension GeocodingClient {
+    /// Live MapKit-backed geocoding client.
     public static let live: GeocodingClient = .init(
         reverseGeocode: { location in
             guard let request = MKReverseGeocodingRequest(location: location) else {

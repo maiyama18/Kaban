@@ -14,6 +14,7 @@ import UIKit
 /// ``PhotoLibraryError/cloudIdentifierUnavailable``. The caller may fall back
 /// to storing the `localIdentifier` temporarily if desired.
 public actor PhotoLibraryClient: NSObject {
+    /// Requested image size and quality.
     public enum DisplayType: Sendable, Equatable {
         /// Optimized square thumbnail delivered via `PHCachingImageManager`.
         case thumbnail(side: CGFloat)
@@ -21,10 +22,15 @@ public actor PhotoLibraryClient: NSObject {
         case original
     }
 
+    /// Error returned by ``PhotoLibraryClient``.
     public enum PhotoLibraryError: Error, LocalizedError {
+        /// The image could not be saved.
         case saveFailed
+        /// The saved asset did not resolve to a `PHCloudIdentifier`.
         case cloudIdentifierUnavailable
+        /// No asset exists for the requested cloud identifier.
         case assetNotFound
+        /// PhotoKit failed while loading image data.
         case imageRequestFailed(any Error)
 
         public var errorDescription: String? {
@@ -47,6 +53,7 @@ public actor PhotoLibraryClient: NSObject {
     private var pendingLocalIdentifier: String?
     private var cloudIdentifierContinuation: CheckedContinuation<String, any Error>?
 
+    /// Creates a photo library client and registers for photo library changes.
     public override init() {
         super.init()
         photoLibrary.register(self)
@@ -182,6 +189,7 @@ public actor PhotoLibraryClient: NSObject {
 }
 
 extension PhotoLibraryClient: PHPhotoLibraryChangeObserver {
+    /// Resolves pending cloud identifiers when PhotoKit reports library changes.
     nonisolated public func photoLibraryDidChange(_ changeInstance: PHChange) {
         Task { await self.resolvePendingIdentifier() }
     }
