@@ -36,7 +36,7 @@ public struct NavigationFlowContainer<
         .sheet(
             item: Binding(
                 get: { flow.presentedSheetContent },
-                set: { if $0 == nil { flow.dismissPresentedContent() } }
+                set: { if $0 == nil { flow.dismissSheet() } }
             )
         ) { content in
             NavigationFlowContainer<PushableDestination, PresentableSheet, PresentableFullScreen, AnyView>(
@@ -58,7 +58,7 @@ public struct NavigationFlowContainer<
         .fullScreenCover(
             item: Binding(
                 get: { flow.presentedFullScreenContent },
-                set: { if $0 == nil { flow.dismissPresentedContent() } }
+                set: { if $0 == nil { flow.dismissFullScreen() } }
             )
         ) { content in
             NavigationFlowContainer<PushableDestination, PresentableSheet, PresentableFullScreen, AnyView>(
@@ -81,7 +81,7 @@ public struct NavigationFlowContainer<
             "Alert",
             isPresented: Binding(
                 get: { flow.presentedAlert != nil },
-                set: { if !$0 { flow.dismissPresentedContent() } }
+                set: { if !$0 { flow.dismissAlert() } }
             ),
             actions: {
                 if let alert = flow.presentedAlert {

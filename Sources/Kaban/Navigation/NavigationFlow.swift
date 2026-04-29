@@ -114,4 +114,19 @@ public final class NavigationFlow<
     public func dismissPresentedContent() {
         presentedContent = nil
     }
+
+    internal func dismissSheet() {
+        guard case .sheet = presentedContent else { return }
+        presentedContent = nil
+    }
+
+    internal func dismissFullScreen() {
+        guard case .fullScreen = presentedContent else { return }
+        presentedContent = nil
+    }
+
+    internal func dismissAlert() {
+        guard case .alert = presentedContent else { return }
+        presentedContent = nil
+    }
 }

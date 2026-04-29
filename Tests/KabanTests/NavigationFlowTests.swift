@@ -59,6 +59,29 @@ func dismissPresentedContentClearsCurrentPresentation() {
 
 @Test
 @MainActor
+func typedDismissDoesNotClearDifferentPresentation() {
+    let flow = NavigationFlow<PushDestination, SheetDestination, FullScreenDestination>()
+
+    flow.presentSheet(.settings)
+    flow.presentFullScreen(.onboarding)
+    flow.dismissSheet()
+
+    #expect(flow.presentedSheet == nil)
+    #expect(flow.presentedFullScreen == .onboarding)
+    #expect(flow.presentedAlert == nil)
+
+    flow.presentAlert(PresentableAlert(message: "Error") {
+        Button("OK") {}
+    })
+    flow.dismissFullScreen()
+
+    #expect(flow.presentedSheet == nil)
+    #expect(flow.presentedFullScreen == nil)
+    #expect(flow.presentedAlert != nil)
+}
+
+@Test
+@MainActor
 func visibleNavigationFlowReturnsTopmostPresentedFlow() {
     let flow = NavigationFlow<PushDestination, SheetDestination, FullScreenDestination>()
 
