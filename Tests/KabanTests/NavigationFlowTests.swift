@@ -19,6 +19,24 @@ private enum FullScreenDestination: String, Identifiable, Sendable {
 }
 
 @Test
+func alertTitleIsOptional() {
+    let alert = PresentableAlert(message: "Error") {
+        Button("OK") {}
+    }
+
+    #expect(alert.title == nil)
+}
+
+@Test
+func alertAcceptsTitle() {
+    let alert = PresentableAlert(title: "Warning", message: "Error") {
+        Button("OK") {}
+    }
+
+    #expect(alert.title == "Warning")
+}
+
+@Test
 @MainActor
 func presentationStateIsMutuallyExclusive() {
     let flow = NavigationFlow<PushDestination, SheetDestination, FullScreenDestination>()

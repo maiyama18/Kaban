@@ -78,7 +78,7 @@ public struct NavigationFlowContainer<
             )
         }
         .alert(
-            "Alert",
+            flow.presentedAlert?.title ?? "",
             isPresented: Binding(
                 get: { flow.presentedAlert != nil },
                 set: { if !$0 { flow.dismissAlert() } }
