@@ -33,17 +33,27 @@ public struct NavigationFlowContainer<
                     pushDestinationBuilder(destination)
                 }
         }
-        .sheet(item: $flow.presentedSheet) { item in
+        .sheet(
+            item: Binding(
+                get: { flow.presentedSheet },
+                set: { if $0 == nil { flow.dismissPresentedContent() } }
+            )
+        ) { item in
             sheetBuilder(item)
         }
-        .fullScreenCover(item: $flow.presentedFullScreen) { item in
+        .fullScreenCover(
+            item: Binding(
+                get: { flow.presentedFullScreen },
+                set: { if $0 == nil { flow.dismissPresentedContent() } }
+            )
+        ) { item in
             fullScreenBuilder(item)
         }
         .alert(
             "Alert",
             isPresented: Binding(
                 get: { flow.presentedAlert != nil },
-                set: { if !$0 { flow.presentedAlert = nil } }
+                set: { if !$0 { flow.dismissPresentedContent() } }
             ),
             actions: {
                 if let alert = flow.presentedAlert {

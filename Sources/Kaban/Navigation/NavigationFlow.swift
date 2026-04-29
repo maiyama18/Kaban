@@ -1,5 +1,14 @@
 import SwiftUI
 
+internal enum NavigationFlowPresentedContent<
+    PresentableSheet: Identifiable & Sendable,
+    PresentableFullScreen: Identifiable & Sendable
+>: Sendable {
+    case sheet(PresentableSheet)
+    case fullScreen(PresentableFullScreen)
+    case alert(PresentableAlert)
+}
+
 @Observable
 @MainActor
 public final class NavigationFlow<
@@ -7,10 +16,22 @@ public final class NavigationFlow<
     PresentableSheet: Identifiable & Sendable,
     PresentableFullScreen: Identifiable & Sendable
 >: Sendable {
+    internal typealias PresentedContent = NavigationFlowPresentedContent<PresentableSheet, PresentableFullScreen>
+
     public var path: [PushableDestination] = []
-    public var presentedSheet: PresentableSheet?
-    public var presentedFullScreen: PresentableFullScreen?
-    public var presentedAlert: PresentableAlert?
+    internal var presentedContent: PresentedContent?
+    internal var presentedSheet: PresentableSheet? {
+        guard case let .sheet(sheet) = presentedContent else { return nil }
+        return sheet
+    }
+    internal var presentedFullScreen: PresentableFullScreen? {
+        guard case let .fullScreen(fullScreen) = presentedContent else { return nil }
+        return fullScreen
+    }
+    internal var presentedAlert: PresentableAlert? {
+        guard case let .alert(alert) = presentedContent else { return nil }
+        return alert
+    }
 
     public init() {}
 
@@ -28,20 +49,18 @@ public final class NavigationFlow<
     }
 
     public func presentSheet(_ sheet: PresentableSheet) {
-        presentedSheet = sheet
+        presentedContent = .sheet(sheet)
     }
 
     public func presentFullScreen(_ fullScreen: PresentableFullScreen) {
-        presentedFullScreen = fullScreen
+        presentedContent = .fullScreen(fullScreen)
     }
 
     public func presentAlert(_ alert: PresentableAlert) {
-        presentedAlert = alert
+        presentedContent = .alert(alert)
     }
 
     public func dismissPresentedContent() {
-        presentedSheet = nil
-        presentedFullScreen = nil
-        presentedAlert = nil
+        presentedContent = nil
     }
 }
