@@ -35,19 +35,47 @@ public struct NavigationFlowContainer<
         }
         .sheet(
             item: Binding(
-                get: { flow.presentedSheet },
+                get: { flow.presentedSheetContent },
                 set: { if $0 == nil { flow.dismissPresentedContent() } }
             )
-        ) { item in
-            sheetBuilder(item)
+        ) { content in
+            NavigationFlowContainer<PushableDestination, PresentableSheet, PresentableFullScreen, AnyView>(
+                flow: content.navigationFlow,
+                pushDestination: { destination in
+                    pushDestinationBuilder(destination)
+                },
+                sheet: { sheet in
+                    sheetBuilder(sheet)
+                },
+                fullScreen: { fullScreen in
+                    fullScreenBuilder(fullScreen)
+                },
+                root: {
+                    sheetBuilder(content.sheet)
+                }
+            )
         }
         .fullScreenCover(
             item: Binding(
-                get: { flow.presentedFullScreen },
+                get: { flow.presentedFullScreenContent },
                 set: { if $0 == nil { flow.dismissPresentedContent() } }
             )
-        ) { item in
-            fullScreenBuilder(item)
+        ) { content in
+            NavigationFlowContainer<PushableDestination, PresentableSheet, PresentableFullScreen, AnyView>(
+                flow: content.navigationFlow,
+                pushDestination: { destination in
+                    pushDestinationBuilder(destination)
+                },
+                sheet: { sheet in
+                    sheetBuilder(sheet)
+                },
+                fullScreen: { fullScreen in
+                    fullScreenBuilder(fullScreen)
+                },
+                root: {
+                    fullScreenBuilder(content.fullScreen)
+                }
+            )
         }
         .alert(
             "Alert",

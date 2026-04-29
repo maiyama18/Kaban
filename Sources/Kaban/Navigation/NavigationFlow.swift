@@ -1,11 +1,34 @@
 import SwiftUI
 
+internal struct NavigationFlowPresentedSheetContent<
+    PushableDestination: Hashable & Sendable,
+    PresentableSheet: Identifiable & Sendable,
+    PresentableFullScreen: Identifiable & Sendable
+>: Identifiable, Sendable {
+    internal let navigationFlow: NavigationFlow<PushableDestination, PresentableSheet, PresentableFullScreen>
+    internal let sheet: PresentableSheet
+
+    internal var id: PresentableSheet.ID { sheet.id }
+}
+
+internal struct NavigationFlowPresentedFullScreenContent<
+    PushableDestination: Hashable & Sendable,
+    PresentableSheet: Identifiable & Sendable,
+    PresentableFullScreen: Identifiable & Sendable
+>: Identifiable, Sendable {
+    internal let navigationFlow: NavigationFlow<PushableDestination, PresentableSheet, PresentableFullScreen>
+    internal let fullScreen: PresentableFullScreen
+
+    internal var id: PresentableFullScreen.ID { fullScreen.id }
+}
+
 internal enum NavigationFlowPresentedContent<
+    PushableDestination: Hashable & Sendable,
     PresentableSheet: Identifiable & Sendable,
     PresentableFullScreen: Identifiable & Sendable
 >: Sendable {
-    case sheet(PresentableSheet)
-    case fullScreen(PresentableFullScreen)
+    case sheet(NavigationFlowPresentedSheetContent<PushableDestination, PresentableSheet, PresentableFullScreen>)
+    case fullScreen(NavigationFlowPresentedFullScreenContent<PushableDestination, PresentableSheet, PresentableFullScreen>)
     case alert(PresentableAlert)
 }
 
@@ -16,17 +39,35 @@ public final class NavigationFlow<
     PresentableSheet: Identifiable & Sendable,
     PresentableFullScreen: Identifiable & Sendable
 >: Sendable {
-    internal typealias PresentedContent = NavigationFlowPresentedContent<PresentableSheet, PresentableFullScreen>
+    internal typealias PresentedContent = NavigationFlowPresentedContent<PushableDestination, PresentableSheet, PresentableFullScreen>
+    internal typealias PresentedSheetContent = NavigationFlowPresentedSheetContent<PushableDestination, PresentableSheet, PresentableFullScreen>
+    internal typealias PresentedFullScreenContent = NavigationFlowPresentedFullScreenContent<PushableDestination, PresentableSheet, PresentableFullScreen>
 
     public var path: [PushableDestination] = []
     internal var presentedContent: PresentedContent?
+    public var visibleNavigationFlow: NavigationFlow {
+        switch presentedContent {
+        case .sheet(let content):
+            content.navigationFlow.visibleNavigationFlow
+        case .fullScreen(let content):
+            content.navigationFlow.visibleNavigationFlow
+        case .alert, nil:
+            self
+        }
+    }
+    internal var presentedSheetContent: PresentedSheetContent? {
+        guard case let .sheet(content) = presentedContent else { return nil }
+        return content
+    }
     internal var presentedSheet: PresentableSheet? {
-        guard case let .sheet(sheet) = presentedContent else { return nil }
-        return sheet
+        presentedSheetContent?.sheet
+    }
+    internal var presentedFullScreenContent: PresentedFullScreenContent? {
+        guard case let .fullScreen(content) = presentedContent else { return nil }
+        return content
     }
     internal var presentedFullScreen: PresentableFullScreen? {
-        guard case let .fullScreen(fullScreen) = presentedContent else { return nil }
-        return fullScreen
+        presentedFullScreenContent?.fullScreen
     }
     internal var presentedAlert: PresentableAlert? {
         guard case let .alert(alert) = presentedContent else { return nil }
@@ -49,11 +90,21 @@ public final class NavigationFlow<
     }
 
     public func presentSheet(_ sheet: PresentableSheet) {
-        presentedContent = .sheet(sheet)
+        presentedContent = .sheet(
+            PresentedSheetContent(
+                navigationFlow: NavigationFlow(),
+                sheet: sheet
+            )
+        )
     }
 
     public func presentFullScreen(_ fullScreen: PresentableFullScreen) {
-        presentedContent = .fullScreen(fullScreen)
+        presentedContent = .fullScreen(
+            PresentedFullScreenContent(
+                navigationFlow: NavigationFlow(),
+                fullScreen: fullScreen
+            )
+        )
     }
 
     public func presentAlert(_ alert: PresentableAlert) {
