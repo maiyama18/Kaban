@@ -6,9 +6,10 @@ import UIKit
 /// Stores `UIImage` into the user's Photo Library and reads images back by the
 /// iCloud-stable `PHCloudIdentifier`.
 ///
-/// Callers are responsible for requesting `PHPhotoLibrary` authorization
-/// before invoking `saveImage(_:)`. `requestImage(cloudIdentifier:displayType:)`
-/// requires at least read authorization.
+/// Use `authorizationStatus()` and `requestAuthorization()` to check and
+/// request `PHPhotoLibrary` read-write authorization before invoking
+/// `saveImage(_:)`. `requestImage(cloudIdentifier:displayType:)` requires
+/// at least read authorization.
 ///
 /// When iCloud Photos is disabled on the device, `saveImage(_:)` will throw
 /// ``PhotoLibraryError/cloudIdentifierUnavailable``. The caller may fall back
@@ -50,13 +51,26 @@ public actor PhotoLibraryClient: NSObject {
     private let imageManager: PHCachingImageManager = PHCachingImageManager()
     private let photoLibrary: PHPhotoLibrary = PHPhotoLibrary.shared()
 
-    private var pendingLocalIdentifier: String?
-    private var cloudIdentifierContinuation: CheckedContinuation<String, any Error>?
+    private var cloudIdentifierContinuations: [String: CheckedContinuation<String, any Error>] = [:]
 
     /// Creates a photo library client and registers for photo library changes.
     public override init() {
         super.init()
         photoLibrary.register(self)
+    }
+
+    deinit {
+        PHPhotoLibrary.shared().unregisterChangeObserver(self)
+    }
+
+    /// Returns the current Photo Library read-write authorization status.
+    nonisolated public func authorizationStatus() -> PHAuthorizationStatus {
+        PHPhotoLibrary.authorizationStatus(for: .readWrite)
+    }
+
+    /// Requests Photo Library read-write authorization.
+    nonisolated public func requestAuthorization() async -> PHAuthorizationStatus {
+        await PHPhotoLibrary.requestAuthorization(for: .readWrite)
     }
 
     /// Saves the given image to the Photo Library and waits for its
@@ -79,18 +93,17 @@ public actor PhotoLibraryClient: NSObject {
         guard let localIdentifier else {
             throw PhotoLibraryError.saveFailed
         }
-        self.pendingLocalIdentifier = localIdentifier
 
         do {
             return try await withTimeout(for: .seconds(3)) { [weak self] in
                 guard let self else { throw CancellationError() }
-                return try await self.awaitCloudIdentifier()
+                return try await self.awaitCloudIdentifier(for: localIdentifier)
             }
         } catch is TimeoutError {
-            resumePendingIdentifier(throwing: PhotoLibraryError.cloudIdentifierUnavailable)
+            resumePendingIdentifier(for: localIdentifier, throwing: PhotoLibraryError.cloudIdentifierUnavailable)
             throw PhotoLibraryError.cloudIdentifierUnavailable
         } catch {
-            resumePendingIdentifier(throwing: error)
+            resumePendingIdentifier(for: localIdentifier, throwing: error)
             throw error
         }
     }
@@ -103,33 +116,40 @@ public actor PhotoLibraryClient: NSObject {
         return try await requestImage(asset: asset, displayType: displayType)
     }
 
-    private func awaitCloudIdentifier() async throws -> String {
-        try await withCheckedThrowingContinuation { continuation in
-            self.cloudIdentifierContinuation = continuation
+    private func awaitCloudIdentifier(for localIdentifier: String) async throws -> String {
+        try await withTaskCancellationHandler {
+            try await withCheckedThrowingContinuation { continuation in
+                self.cloudIdentifierContinuations[localIdentifier] = continuation
+                self.resolvePendingIdentifiers()
+            }
+        } onCancel: {
+            Task {
+                await self.resumePendingIdentifier(for: localIdentifier, throwing: CancellationError())
+            }
         }
     }
 
-    private func resumePendingIdentifier(throwing error: any Error) {
-        cloudIdentifierContinuation?.resume(throwing: error)
-        cloudIdentifierContinuation = nil
-        pendingLocalIdentifier = nil
+    private func resumePendingIdentifier(for localIdentifier: String, throwing error: any Error) {
+        guard let continuation = cloudIdentifierContinuations.removeValue(forKey: localIdentifier) else {
+            return
+        }
+        continuation.resume(throwing: error)
     }
 
-    private func resolvePendingIdentifier() {
-        guard
-            let pendingLocalIdentifier,
-            let cloudIdentifierContinuation
-        else { return }
+    private func resolvePendingIdentifiers() {
+        let localIdentifiers = Array(cloudIdentifierContinuations.keys)
+        guard !localIdentifiers.isEmpty else { return }
 
-        let mappings = photoLibrary.cloudIdentifierMappings(forLocalIdentifiers: [pendingLocalIdentifier])
-        guard
-            let result = mappings[pendingLocalIdentifier],
-            case .success(let cloudIdentifier) = result
-        else { return }
+        let mappings = photoLibrary.cloudIdentifierMappings(forLocalIdentifiers: localIdentifiers)
+        for localIdentifier in localIdentifiers {
+            guard
+                let result = mappings[localIdentifier],
+                case .success(let cloudIdentifier) = result,
+                let continuation = cloudIdentifierContinuations.removeValue(forKey: localIdentifier)
+            else { continue }
 
-        cloudIdentifierContinuation.resume(returning: cloudIdentifier.stringValue)
-        self.cloudIdentifierContinuation = nil
-        self.pendingLocalIdentifier = nil
+            continuation.resume(returning: cloudIdentifier.stringValue)
+        }
     }
 
     private func asset(forCloudIdentifier cloudIdentifier: String) -> PHAsset? {
@@ -191,7 +211,7 @@ public actor PhotoLibraryClient: NSObject {
 extension PhotoLibraryClient: PHPhotoLibraryChangeObserver {
     /// Resolves pending cloud identifiers when PhotoKit reports library changes.
     nonisolated public func photoLibraryDidChange(_ changeInstance: PHChange) {
-        Task { await self.resolvePendingIdentifier() }
+        Task { await self.resolvePendingIdentifiers() }
     }
 }
 
