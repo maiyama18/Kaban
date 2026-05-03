@@ -1,6 +1,6 @@
 # Kaban
 
-A reusable SwiftUI component and design system library for iOS apps. Swift Package (swift-tools-version 6.2, iOS 26+/macOS 26+).
+A reusable SwiftUI component and design system library for iOS apps. Swift Package (swift-tools-version 6.2, iOS 26+).
 
 ## Build
 
@@ -17,10 +17,10 @@ Sources/Kaban/
 ├── DesignSystem/     # KabanColor, KabanFont, KabanAccentColor, KabanColor+View
 ├── ButtonStyles/     # KabanPrimaryButtonStyle, KabanSecondaryButtonStyle
 ├── Clients/          # Framework-backed dependency clients
-├── Components/       # AsyncButton, PhotoImage, SafariScreen, ActivityScreen, PlaceholderTextEditor, LoadingStateView
+├── Components/       # AsyncButton, PhotoImage, SafariScreen, ActivityScreen, PlaceholderTextEditor, LoadingStateView, KabanLogViewerScreen
 ├── Modifiers/        # OnFirstAppearModifier, OnForegroundModifier, OnBackgroundModifier, OnShakeModifier
 ├── Navigation/       # NavigationFlow, NavigationFlowContainer, PresentableAlert
-├── Utilities/        # LoadingState, ConcurrencyUtils, Bundle+Extension
+├── Utilities/        # LoadingState, ConcurrencyUtils, Bundle+Extension, KabanLogger
 └── Resources/        # Colors.xcassets, Localizable.xcstrings
 ```
 
