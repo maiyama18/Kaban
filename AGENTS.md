@@ -17,7 +17,7 @@ Sources/Kaban/
 ├── DesignSystem/     # KabanColor, KabanFont, KabanAccentColor, KabanColor+View
 ├── ButtonStyles/     # KabanPrimaryButtonStyle, KabanSecondaryButtonStyle
 ├── Clients/          # Framework-backed dependency clients
-├── Components/       # AsyncButton, PhotoImage, SafariScreen, ActivityScreen, PlaceholderTextEditor, LoadingStateView, KabanLogViewerScreen
+├── Components/       # AsyncButton, PhotoImage, SafariScreen, ActivityScreen, PlaceholderTextEditor, LoadingStateView
 ├── Modifiers/        # OnFirstAppearModifier, OnForegroundModifier, OnBackgroundModifier, OnShakeModifier
 ├── Navigation/       # NavigationFlow, NavigationFlowContainer, PresentableAlert
 ├── Utilities/        # LoadingState, ConcurrencyUtils, Bundle+Extension, KabanLogger
