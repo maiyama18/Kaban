@@ -57,12 +57,12 @@ Image(systemName: "checkmark.circle.fill")
 Button("Continue") {
     // Handle tap
 }
-.buttonStyle(.kabanPrimary)
+.buttonStyle(.kabanPrimary(shape: .roundedRectangle))
 
 Button("Cancel") {
     // Handle tap
 }
-.buttonStyle(.kabanSecondary)
+.buttonStyle(.kabanSecondary(shape: .capsule))
 ```
 
 ## Features

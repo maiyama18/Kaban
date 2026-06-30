@@ -52,6 +52,6 @@ public struct AsyncButton<Label: View>: View {
     } label: {
         Text("Tap me")
     }
-    .buttonStyle(.kabanPrimary)
+    .buttonStyle(.kabanPrimary(shape: .roundedRectangle))
     .padding()
 }

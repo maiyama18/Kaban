@@ -38,7 +38,7 @@ public struct LoadingStateView<T: Sendable, LoadedContent: View>: View {
                     AsyncButton(action: retryAction) {
                         Text(.retry)
                     }
-                    .buttonStyle(.kabanPrimary)
+                    .buttonStyle(.kabanPrimary(shape: .roundedRectangle))
                 }
             }
             .padding()
