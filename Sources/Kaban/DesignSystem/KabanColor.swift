@@ -4,6 +4,11 @@ import SwiftUI
 public struct KabanColor: Sendable {
     internal let color: Color
 
+    /// Creates a Kaban color token from a SwiftUI color.
+    public init(_ color: Color) {
+        self.color = color
+    }
+
     internal init(resource: ColorResource) {
         self.color = Color(resource)
     }

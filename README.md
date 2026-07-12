@@ -41,6 +41,15 @@ Available accent colors:
 .accentPurple
 ```
 
+To use a color from the app's Asset Catalog, create a `KabanColor` from its SwiftUI `Color`. Light and dark appearances defined in the asset are preserved.
+
+```swift
+let appAccentColor = KabanColor(Color("AppAccent"))
+
+ContentView()
+    .environment(\.kabanAccentColor, appAccentColor)
+```
+
 ### Text and Colors
 
 ```swift
