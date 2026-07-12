@@ -77,6 +77,70 @@ func dismissPresentedContentClearsCurrentPresentation() {
 
 @Test
 @MainActor
+func sheetFlowDismissesItselfFromParent() {
+    let flow = NavigationFlow<PushDestination, SheetDestination, FullScreenDestination>()
+
+    flow.presentSheet(.settings)
+    let sheetFlow = flow.visibleNavigationFlow
+    sheetFlow.dismiss()
+
+    #expect(flow.presentedSheet == nil)
+    #expect(flow.visibleNavigationFlow === flow)
+}
+
+@Test
+@MainActor
+func fullScreenFlowDismissesItselfFromParent() {
+    let flow = NavigationFlow<PushDestination, SheetDestination, FullScreenDestination>()
+
+    flow.presentFullScreen(.onboarding)
+    let fullScreenFlow = flow.visibleNavigationFlow
+    fullScreenFlow.dismiss()
+
+    #expect(flow.presentedFullScreen == nil)
+    #expect(flow.visibleNavigationFlow === flow)
+}
+
+@Test
+@MainActor
+func rootFlowDismissDoesNothing() {
+    let flow = NavigationFlow<PushDestination, SheetDestination, FullScreenDestination>()
+
+    flow.dismiss()
+
+    #expect(flow.visibleNavigationFlow === flow)
+}
+
+@Test
+@MainActor
+func childFlowDoesNotRetainParent() {
+    var flow: NavigationFlow<PushDestination, SheetDestination, FullScreenDestination>? = NavigationFlow()
+    weak let parentFlow = flow
+
+    flow?.presentSheet(.settings)
+    let childFlow = flow?.visibleNavigationFlow
+    flow = nil
+
+    #expect(parentFlow == nil)
+    childFlow?.dismiss()
+}
+
+@Test
+@MainActor
+func replacedChildFlowDoesNotDismissCurrentPresentation() {
+    let flow = NavigationFlow<PushDestination, SheetDestination, FullScreenDestination>()
+
+    flow.presentSheet(.settings)
+    let replacedSheetFlow = flow.visibleNavigationFlow
+    flow.presentFullScreen(.onboarding)
+    replacedSheetFlow.dismiss()
+
+    #expect(flow.presentedSheet == nil)
+    #expect(flow.presentedFullScreen == .onboarding)
+}
+
+@Test
+@MainActor
 func typedDismissDoesNotClearDifferentPresentation() {
     let flow = NavigationFlow<PushDestination, SheetDestination, FullScreenDestination>()
 

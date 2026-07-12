@@ -65,6 +65,20 @@ Button("Cancel") {
 .buttonStyle(.kabanSecondary(shape: .capsule))
 ```
 
+### Navigation
+
+Sheets and full-screen covers receive their own `NavigationFlow`. Call `dismiss()`
+on that child flow to close its presentation without depending on SwiftUI's
+`@Environment(\.dismiss)`.
+
+```swift
+@Environment(NavigationFlow<Route, Sheet, FullScreen>.self) private var flow
+
+Button("Close") {
+    flow.dismiss()
+}
+```
+
 ## Features
 
 - **DesignSystem** — `KabanColor`, `KabanFont`, accent color management

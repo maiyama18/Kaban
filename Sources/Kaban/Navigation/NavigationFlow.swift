@@ -50,6 +50,7 @@ public final class NavigationFlow<
 
     /// Destinations currently pushed in the navigation stack.
     public var path: [PushableDestination] = []
+    private weak var parentFlow: NavigationFlow?
     internal var presentedContent: PresentedContent?
     /// The deepest visible flow, following presented sheets and full-screen covers.
     public var visibleNavigationFlow: NavigationFlow {
@@ -84,6 +85,10 @@ public final class NavigationFlow<
     /// Creates an empty navigation flow.
     public init() {}
 
+    internal init(parentFlow: NavigationFlow) {
+        self.parentFlow = parentFlow
+    }
+
     /// Pushes a destination onto the navigation stack.
     public func push(_ destination: PushableDestination) {
         path.append(destination)
@@ -104,7 +109,7 @@ public final class NavigationFlow<
     public func presentSheet(_ sheet: PresentableSheet) {
         presentedContent = .sheet(
             PresentedSheetContent(
-                navigationFlow: NavigationFlow(),
+                navigationFlow: NavigationFlow(parentFlow: self),
                 sheet: sheet
             )
         )
@@ -114,7 +119,7 @@ public final class NavigationFlow<
     public func presentFullScreen(_ fullScreen: PresentableFullScreen) {
         presentedContent = .fullScreen(
             PresentedFullScreenContent(
-                navigationFlow: NavigationFlow(),
+                navigationFlow: NavigationFlow(parentFlow: self),
                 fullScreen: fullScreen
             )
         )
@@ -128,6 +133,24 @@ public final class NavigationFlow<
     /// Dismisses the active sheet, full-screen cover, or alert.
     public func dismissPresentedContent() {
         presentedContent = nil
+    }
+
+    /// Dismisses the sheet or full-screen cover that contains this flow.
+    ///
+    /// Calling this method on a root flow has no effect.
+    public func dismiss() {
+        parentFlow?.dismiss(self)
+    }
+
+    private func dismiss(_ childFlow: NavigationFlow) {
+        switch presentedContent {
+        case .sheet(let content) where content.navigationFlow === childFlow:
+            presentedContent = nil
+        case .fullScreen(let content) where content.navigationFlow === childFlow:
+            presentedContent = nil
+        default:
+            break
+        }
     }
 
     internal func dismissSheet() {
