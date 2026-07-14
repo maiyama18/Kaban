@@ -2,7 +2,8 @@ import SwiftUI
 
 /// Color token used by Kaban components.
 public struct KabanColor: Sendable {
-    internal let color: Color
+    /// Underlying SwiftUI color.
+    public let color: Color
 
     /// Creates a Kaban color token from a SwiftUI color.
     public init(_ color: Color) {

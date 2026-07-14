@@ -58,6 +58,9 @@ Text("Hello")
 
 Image(systemName: "checkmark.circle.fill")
     .kabanForegroundStyle(.accentGreen)
+
+RoundedRectangle(cornerRadius: 12)
+    .shadow(color: KabanColor.accentBlue.color.opacity(0.2), radius: 8)
 ```
 
 ### Buttons
