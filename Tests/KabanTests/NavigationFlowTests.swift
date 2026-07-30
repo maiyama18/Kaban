@@ -1,5 +1,6 @@
 import SwiftUI
 import Testing
+import UIKit
 @testable import Kaban
 
 private enum PushDestination: Hashable, Sendable {
@@ -29,6 +30,22 @@ private func makeNavigationFlowContainer(
         fullScreen: { _ in EmptyView() },
         root: { EmptyView() }
     )
+}
+
+@MainActor
+private func waitUntil(
+    timeout: Duration = .seconds(1),
+    condition: () -> Bool
+) async -> Bool {
+    let clock = ContinuousClock()
+    let deadline = clock.now.advanced(by: timeout)
+
+    while !condition() {
+        guard clock.now < deadline else { return false }
+        try? await Task.sleep(for: .milliseconds(10))
+    }
+
+    return true
 }
 
 @Test
@@ -182,20 +199,20 @@ func sheetBindingTracksPresentationUpdates() async {
     let container = makeNavigationFlowContainer(flow: flow)
 
     await confirmation { stateChanged in
-        withObservationTracking {
-            _ = container.presentedSheetBinding
+        let binding = withObservationTracking {
+            container.presentedSheetBinding
         } onChange: {
             stateChanged()
         }
 
         flow.presentSheet(.settings)
+
+        #expect(binding.wrappedValue?.sheet == .settings)
+
+        binding.wrappedValue = nil
+
+        #expect(flow.presentedSheet == nil)
     }
-
-    #expect(container.presentedSheetBinding.wrappedValue?.sheet == .settings)
-
-    container.presentedSheetBinding.wrappedValue = nil
-
-    #expect(flow.presentedSheet == nil)
 }
 
 @Test
@@ -205,20 +222,42 @@ func fullScreenBindingTracksPresentationUpdates() async {
     let container = makeNavigationFlowContainer(flow: flow)
 
     await confirmation { stateChanged in
-        withObservationTracking {
-            _ = container.presentedFullScreenBinding
+        let binding = withObservationTracking {
+            container.presentedFullScreenBinding
         } onChange: {
             stateChanged()
         }
 
         flow.presentFullScreen(.onboarding)
+
+        #expect(binding.wrappedValue?.fullScreen == .onboarding)
+
+        binding.wrappedValue = nil
+
+        #expect(flow.presentedFullScreen == nil)
     }
+}
 
-    #expect(container.presentedFullScreenBinding.wrappedValue?.fullScreen == .onboarding)
+@Test
+@MainActor
+func sheetPresentationAppearsAfterStateUpdate() async {
+    let flow = NavigationFlow<PushDestination, SheetDestination, FullScreenDestination>()
+    let hostingController = UIHostingController(rootView: makeNavigationFlowContainer(flow: flow))
+    let window = UIWindow(frame: UIScreen.main.bounds)
+    window.rootViewController = hostingController
+    window.makeKeyAndVisible()
 
-    container.presentedFullScreenBinding.wrappedValue = nil
+    #expect(await waitUntil {
+        hostingController.viewIfLoaded?.window != nil
+    })
 
-    #expect(flow.presentedFullScreen == nil)
+    flow.presentSheet(.settings)
+
+    #expect(await waitUntil {
+        hostingController.presentedViewController != nil
+    })
+
+    window.isHidden = true
 }
 
 @Test

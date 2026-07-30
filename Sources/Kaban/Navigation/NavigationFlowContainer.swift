@@ -96,9 +96,9 @@ public struct NavigationFlowContainer<
     internal var presentedSheetBinding: Binding<
         NavigationFlowPresentedSheetContent<PushableDestination, PresentableSheet, PresentableFullScreen>?
     > {
-        let content = flow.presentedSheetContent
+        let _ = flow.presentedSheetContent
         return Binding(
-            get: { content },
+            get: { flow.presentedSheetContent },
             set: { if $0 == nil { flow.dismissSheet() } }
         )
     }
@@ -106,9 +106,9 @@ public struct NavigationFlowContainer<
     internal var presentedFullScreenBinding: Binding<
         NavigationFlowPresentedFullScreenContent<PushableDestination, PresentableSheet, PresentableFullScreen>?
     > {
-        let content = flow.presentedFullScreenContent
+        let _ = flow.presentedFullScreenContent
         return Binding(
-            get: { content },
+            get: { flow.presentedFullScreenContent },
             set: { if $0 == nil { flow.dismissFullScreen() } }
         )
     }
