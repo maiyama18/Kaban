@@ -32,13 +32,18 @@ struct ExampleApp: App {
 Available accent colors:
 
 ```swift
-.accentPink
+.accentRed
 .accentOrange
 .accentYellow
+.accentLime
 .accentGreen
+.accentMint
 .accentTeal
+.accentCyan
 .accentBlue
+.accentIndigo
 .accentPurple
+.accentPink
 ```
 
 To use a color from the app's Asset Catalog, create a `KabanColor` from its SwiftUI `Color`. Light and dark appearances defined in the asset are preserved.

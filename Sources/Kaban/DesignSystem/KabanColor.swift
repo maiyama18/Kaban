@@ -32,18 +32,28 @@ public struct KabanColor: Sendable {
     /// Destructive or error surface color.
     public static let surfaceDanger = KabanColor(resource: .Surface.danger)
 
-    /// Pink accent color.
-    public static let accentPink = KabanColor(resource: .Accent.pink)
+    /// Red accent color.
+    public static let accentRed = KabanColor(resource: .Accent.red)
     /// Orange accent color.
     public static let accentOrange = KabanColor(resource: .Accent.orange)
     /// Yellow accent color.
     public static let accentYellow = KabanColor(resource: .Accent.yellow)
+    /// Lime accent color.
+    public static let accentLime = KabanColor(resource: .Accent.lime)
     /// Green accent color.
     public static let accentGreen = KabanColor(resource: .Accent.green)
+    /// Mint accent color.
+    public static let accentMint = KabanColor(resource: .Accent.mint)
     /// Teal accent color.
     public static let accentTeal = KabanColor(resource: .Accent.teal)
+    /// Cyan accent color.
+    public static let accentCyan = KabanColor(resource: .Accent.cyan)
     /// Blue accent color.
     public static let accentBlue = KabanColor(resource: .Accent.blue)
+    /// Indigo accent color.
+    public static let accentIndigo = KabanColor(resource: .Accent.indigo)
     /// Purple accent color.
     public static let accentPurple = KabanColor(resource: .Accent.purple)
+    /// Pink accent color.
+    public static let accentPink = KabanColor(resource: .Accent.pink)
 }
