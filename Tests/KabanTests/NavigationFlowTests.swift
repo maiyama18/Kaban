@@ -18,6 +18,19 @@ private enum FullScreenDestination: String, Identifiable, Sendable {
     fileprivate var id: String { rawValue }
 }
 
+@MainActor
+private func makeNavigationFlowContainer(
+    flow: NavigationFlow<PushDestination, SheetDestination, FullScreenDestination>
+) -> NavigationFlowContainer<PushDestination, SheetDestination, FullScreenDestination, EmptyView> {
+    NavigationFlowContainer(
+        flow: flow,
+        pushDestination: { _ in EmptyView() },
+        sheet: { _ in EmptyView() },
+        fullScreen: { _ in EmptyView() },
+        root: { EmptyView() }
+    )
+}
+
 @Test
 func alertTitleIsOptional() {
     let alert = PresentableAlert(message: "Error") {
@@ -160,6 +173,52 @@ func typedDismissDoesNotClearDifferentPresentation() {
     #expect(flow.presentedSheet == nil)
     #expect(flow.presentedFullScreen == nil)
     #expect(flow.presentedAlert != nil)
+}
+
+@Test
+@MainActor
+func sheetBindingTracksPresentationUpdates() async {
+    let flow = NavigationFlow<PushDestination, SheetDestination, FullScreenDestination>()
+    let container = makeNavigationFlowContainer(flow: flow)
+
+    await confirmation { stateChanged in
+        withObservationTracking {
+            _ = container.presentedSheetBinding
+        } onChange: {
+            stateChanged()
+        }
+
+        flow.presentSheet(.settings)
+    }
+
+    #expect(container.presentedSheetBinding.wrappedValue?.sheet == .settings)
+
+    container.presentedSheetBinding.wrappedValue = nil
+
+    #expect(flow.presentedSheet == nil)
+}
+
+@Test
+@MainActor
+func fullScreenBindingTracksPresentationUpdates() async {
+    let flow = NavigationFlow<PushDestination, SheetDestination, FullScreenDestination>()
+    let container = makeNavigationFlowContainer(flow: flow)
+
+    await confirmation { stateChanged in
+        withObservationTracking {
+            _ = container.presentedFullScreenBinding
+        } onChange: {
+            stateChanged()
+        }
+
+        flow.presentFullScreen(.onboarding)
+    }
+
+    #expect(container.presentedFullScreenBinding.wrappedValue?.fullScreen == .onboarding)
+
+    container.presentedFullScreenBinding.wrappedValue = nil
+
+    #expect(flow.presentedFullScreen == nil)
 }
 
 @Test

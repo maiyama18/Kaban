@@ -36,10 +36,7 @@ public struct NavigationFlowContainer<
                 }
         }
         .sheet(
-            item: Binding(
-                get: { flow.presentedSheetContent },
-                set: { if $0 == nil { flow.dismissSheet() } }
-            )
+            item: presentedSheetBinding
         ) { content in
             NavigationFlowContainer<PushableDestination, PresentableSheet, PresentableFullScreen, AnyView>(
                 flow: content.navigationFlow,
@@ -58,10 +55,7 @@ public struct NavigationFlowContainer<
             )
         }
         .fullScreenCover(
-            item: Binding(
-                get: { flow.presentedFullScreenContent },
-                set: { if $0 == nil { flow.dismissFullScreen() } }
-            )
+            item: presentedFullScreenBinding
         ) { content in
             NavigationFlowContainer<PushableDestination, PresentableSheet, PresentableFullScreen, AnyView>(
                 flow: content.navigationFlow,
@@ -97,6 +91,26 @@ public struct NavigationFlowContainer<
             }
         )
         .environment(flow)
+    }
+
+    internal var presentedSheetBinding: Binding<
+        NavigationFlowPresentedSheetContent<PushableDestination, PresentableSheet, PresentableFullScreen>?
+    > {
+        let content = flow.presentedSheetContent
+        return Binding(
+            get: { content },
+            set: { if $0 == nil { flow.dismissSheet() } }
+        )
+    }
+
+    internal var presentedFullScreenBinding: Binding<
+        NavigationFlowPresentedFullScreenContent<PushableDestination, PresentableSheet, PresentableFullScreen>?
+    > {
+        let content = flow.presentedFullScreenContent
+        return Binding(
+            get: { content },
+            set: { if $0 == nil { flow.dismissFullScreen() } }
+        )
     }
 }
 
